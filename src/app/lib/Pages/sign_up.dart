@@ -86,11 +86,13 @@ class _SignUpFormState extends State<SignUpForm> {
               return null;
             },
           ),
-          Spacer(flex: 7),
-          RectengleButton(
-            text: 'Submit',
-            press: _signUp,
-          ),
+          Spacer(),
+          Row(children: <Widget>[
+            RectengleButton(
+              text: 'Submit',
+              press: _signUp,
+            ),
+          ]),
         ],
       ),
     );

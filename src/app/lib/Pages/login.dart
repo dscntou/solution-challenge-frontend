@@ -80,9 +80,10 @@ class _LoginFormState extends State<LoginForm> {
                   Navigator.of(context).pushNamed('/sign_up');
                 }),
             RectengleButton(
-              text: 'Log in',
-              press: () {},
-            ),
+                text: 'Log in',
+                press: () {
+                  _login();
+                }),
           ]),
         ],
       ),
