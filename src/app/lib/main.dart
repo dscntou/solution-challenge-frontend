@@ -13,7 +13,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'HI',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.indigo,
+        primaryColor: Colors.indigo,
       ),
       routes: {
         '/': (_) => LoginPage(),

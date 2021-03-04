@@ -89,6 +89,7 @@ class _SignUpFormState extends State<SignUpForm> {
           Spacer(),
           Row(children: <Widget>[
             RectengleButton(
+              color: Theme.of(context).primaryColor,
               text: 'Submit',
               press: _signUp,
             ),

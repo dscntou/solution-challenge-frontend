@@ -43,7 +43,7 @@ class HomeDrawer extends StatelessWidget {
               ),
             ),
             decoration: BoxDecoration(
-              color: Colors.blue,
+              color: Theme.of(context).primaryColor,
             )),
         ListTile(
           title: Text('Tile1'),

@@ -82,6 +82,7 @@ class _LoginFormState extends State<LoginForm> {
                 }),
             RectengleButton(
                 text: 'Log in',
+                color: Theme.of(context).primaryColor,
                 press: () {
                   _login();
                 }),
