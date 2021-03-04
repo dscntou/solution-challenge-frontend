@@ -40,6 +40,7 @@ class _LoginFormState extends State<LoginForm> {
     if (loginForm.validate()) {
       loginForm.save();
       print('$_email\n$_password\n\n');
+      Navigator.of(context).pushNamed('/home');
     }
   }
 
