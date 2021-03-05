@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:dio/dio.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'components/bottom_form_button.dart';
 
 class LoginPage extends StatelessWidget {
@@ -9,7 +11,7 @@ class LoginPage extends StatelessWidget {
       appBar: AppBar(
         title: Text('Login'),
         leading: IconButton(
-          icon: const Icon(Icons.menu),
+          icon: Icon(Icons.menu),
           onPressed: () {},
         ),
       ),
@@ -35,12 +37,35 @@ class _LoginFormState extends State<LoginForm> {
     });
   }
 
-  void _login() {
+  void _login() async {
     var loginForm = _formKey.currentState;
+    Navigator.of(context).push(
+      PageRouteBuilder(
+          opaque: false,
+          pageBuilder: (_, __, ___) {
+            return Container(
+              color: Colors.grey.withOpacity(0.3),
+              child: SpinKitDoubleBounce(color: Colors.grey),
+            );
+          }),
+    );
     if (loginForm.validate()) {
       loginForm.save();
       print('$_email\n$_password\n\n');
-      Navigator.of(context).pushNamed('/home');
+      try {
+        Response response;
+        response = await Dio().get('https://www.google.com');
+        print(response);
+        Navigator.of(context).pop();
+        Navigator.of(context).pushNamed('/home');
+      } catch (e) {
+        print(e);
+        await Future.delayed(Duration(seconds: 3));
+        Navigator.of(context).pop();
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('Network Error'),
+        ));
+      }
     }
   }
 
