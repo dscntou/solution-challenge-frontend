@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'components/bottom_form_button.dart';
+import 'components/validator.dart';
 import 'package:dio/dio.dart';
 import 'package:crypto/crypto.dart';
 import 'dart:convert';
@@ -66,10 +67,7 @@ class _SignUpFormState extends State<SignUpForm> {
               icon: Icon(Icons.account_circle),
             ),
             onSaved: (val) => _name = val,
-            validator: (val) {
-              if (val.length == 0) return 'Name cannot be empty.';
-              return null;
-            },
+            validator: (val) => Validator.name(val),
           ),
           TextFormField(
             keyboardType: TextInputType.emailAddress,
@@ -78,13 +76,7 @@ class _SignUpFormState extends State<SignUpForm> {
               icon: Icon(Icons.email),
             ),
             onSaved: (val) => _email = val,
-            validator: (val) {
-              bool emailValid = RegExp(
-                      r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-                  .hasMatch(val);
-              if (!emailValid) return 'Error email format.';
-              return null;
-            },
+            validator: (val) => Validator.email(val),
           ),
           TextFormField(
             obscureText: true,
@@ -95,11 +87,7 @@ class _SignUpFormState extends State<SignUpForm> {
               icon: Icon(Icons.lock),
             ),
             onSaved: (val) => _password = val,
-            validator: (val) {
-              if (val.length < 6)
-                return 'The password must at least has 6 characters.';
-              return null;
-            },
+            validator: (val) => Validator.password(val),
           ),
           TextFormField(
             obscureText: true,

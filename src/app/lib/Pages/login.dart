@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:crypto/crypto.dart';
+import 'dart:convert';
 import 'components/bottom_form_button.dart';
+import 'components/validator.dart';
 
 class LoginPage extends StatelessWidget {
   @override
@@ -30,6 +33,7 @@ class _LoginFormState extends State<LoginForm> {
   String _email, _password;
   bool _obscureText = true;
   final _formKey = GlobalKey<FormState>();
+  var _dio = Dio();
 
   void _toggle() {
     setState(() {
@@ -39,22 +43,22 @@ class _LoginFormState extends State<LoginForm> {
 
   void _login() async {
     var loginForm = _formKey.currentState;
-    Navigator.of(context).push(
-      PageRouteBuilder(
-          opaque: false,
-          pageBuilder: (_, __, ___) {
-            return Container(
-              color: Colors.grey.withOpacity(0.3),
-              child: SpinKitDoubleBounce(color: Colors.grey),
-            );
-          }),
-    );
     if (loginForm.validate()) {
+      Navigator.of(context).push(
+        PageRouteBuilder(
+            opaque: false,
+            pageBuilder: (_, __, ___) {
+              return Container(
+                color: Colors.grey.withOpacity(0.3),
+                child: SpinKitDoubleBounce(color: Colors.grey),
+              );
+            }),
+      );
       loginForm.save();
       print('$_email\n$_password\n\n');
       try {
         Response response;
-        response = await Dio().get('https://www.google.com');
+        // response = await _dio.post('http://api.rexwu.tw/api/user', data:{'email':_email, 'password':});
         print(response);
         Navigator.of(context).pop();
         Navigator.of(context).pushNamed('/home');
@@ -82,6 +86,7 @@ class _LoginFormState extends State<LoginForm> {
               icon: Icon(Icons.account_circle),
             ),
             onSaved: (val) => _email = val,
+            validator: (val) => Validator.email(val),
           ),
           TextFormField(
             obscureText: _obscureText,
@@ -96,6 +101,7 @@ class _LoginFormState extends State<LoginForm> {
               ),
             ),
             onSaved: (val) => _password = val,
+            validator: (val) => Validator.password(val),
           ),
           Spacer(),
           Row(children: <Widget>[
