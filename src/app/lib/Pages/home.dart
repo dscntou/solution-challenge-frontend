@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:dio/dio.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -7,9 +8,22 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final GlobalKey<ScaffoldState> _homeKey = new GlobalKey<ScaffoldState>();
+  Map parameters;
   final String name = 'Name';
+  final _dio = Dio();
+  Map userProfile;
+
+  Future<Map> getUserProfile() async {
+    Response response = await _dio.get(
+        'http://api.rexwu.tw/api/user/${parameters['email']}',
+        queryParameters: {'Token': parameters['token']});
+    print(response.data);
+  }
+
   @override
   Widget build(BuildContext context) {
+    parameters = (ModalRoute.of(context).settings.arguments as Map);
+    getUserProfile();
     return Scaffold(
       key: _homeKey,
       appBar: AppBar(
