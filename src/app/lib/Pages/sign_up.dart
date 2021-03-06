@@ -33,13 +33,23 @@ class _SignUpFormState extends State<SignUpForm> {
   final TextEditingController _pass = TextEditingController();
   final TextEditingController _comfirmPass = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  Dio _dio = new Dio();
 
-  void _signUp() {
+  void _signUp() async {
     var signUpForm = _formKey.currentState;
     if (signUpForm.validate()) {
       signUpForm.save();
+      var encryptedPassword = sha1.convert(utf8.encode(_password)).toString();
       print('$_name\n$_email\n$_password\n$_confirmPassword');
+      print('$encryptedPassword\n');
       Navigator.of(context).pushNamed('/verify', arguments: {'email': _email});
+      Response response = await _dio.post('http://api.rexwu.tw/api/user/',
+          data: {
+            'email': _email,
+            'password': encryptedPassword,
+            'name': _name
+          });
+      print(response.statusCode);
     }
   }
 
