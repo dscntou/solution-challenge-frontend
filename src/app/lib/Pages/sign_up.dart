@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'components/bottom_form_button.dart';
+import 'package:dio/dio.dart';
+import 'package:crypto/crypto.dart';
+import 'dart:convert';
 
 class SignUpPage extends StatelessWidget {
   @override
@@ -53,6 +56,10 @@ class _SignUpFormState extends State<SignUpForm> {
               icon: Icon(Icons.account_circle),
             ),
             onSaved: (val) => _name = val,
+            validator: (val) {
+              if (val.length == 0) return 'Name cannot be empty.';
+              return null;
+            },
           ),
           TextFormField(
             keyboardType: TextInputType.emailAddress,
@@ -61,6 +68,13 @@ class _SignUpFormState extends State<SignUpForm> {
               icon: Icon(Icons.email),
             ),
             onSaved: (val) => _email = val,
+            validator: (val) {
+              bool emailValid = RegExp(
+                      r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                  .hasMatch(val);
+              if (!emailValid) return 'Error email format.';
+              return null;
+            },
           ),
           TextFormField(
             obscureText: true,
@@ -71,6 +85,11 @@ class _SignUpFormState extends State<SignUpForm> {
               icon: Icon(Icons.lock),
             ),
             onSaved: (val) => _password = val,
+            validator: (val) {
+              if (val.length < 6)
+                return 'The password must at least has 6 characters.';
+              return null;
+            },
           ),
           TextFormField(
             obscureText: true,
@@ -82,7 +101,7 @@ class _SignUpFormState extends State<SignUpForm> {
             ),
             onSaved: (val) => _confirmPassword = val,
             validator: (val) {
-              if (val != _pass.text) return 'Not Match';
+              if (val != _pass.text) return 'Not Match.';
               return null;
             },
           ),
