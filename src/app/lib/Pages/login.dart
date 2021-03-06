@@ -28,7 +28,6 @@ class LoginForm extends StatefulWidget {
   _LoginFormState createState() => _LoginFormState();
 }
 
-// TODO: validators of email and password
 class _LoginFormState extends State<LoginForm> {
   String _email, _password;
   bool _obscureText = true;
@@ -43,6 +42,7 @@ class _LoginFormState extends State<LoginForm> {
 
   void _login() async {
     var loginForm = _formKey.currentState;
+    String token;
     if (loginForm.validate()) {
       Navigator.of(context).push(
         PageRouteBuilder(
@@ -55,20 +55,52 @@ class _LoginFormState extends State<LoginForm> {
             }),
       );
       loginForm.save();
-      print('$_email\n$_password\n\n');
+      var encryptedPassword = sha1.convert(utf8.encode(_password)).toString();
       try {
         Response response;
-        // response = await _dio.post('http://api.rexwu.tw/api/user', data:{'email':_email, 'password':});
-        print(response);
-        Navigator.of(context).pop();
-        Navigator.of(context).pushNamed('/home');
+        response = await _dio.post('http://api.rexwu.tw/api/user/login/',
+            data: {'email': _email, 'password': encryptedPassword});
+        token = response.data['token'];
+      } on DioError catch (e) {
+        await Future.delayed(Duration(seconds: 3)); // FOR DEBUG
+        switch (e.type) {
+          case DioErrorType.RESPONSE:
+            ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Invalid email or password.')));
+            break;
+          case DioErrorType.DEFAULT:
+            ScaffoldMessenger.of(context)
+                .showSnackBar(SnackBar(content: Text('Network error.')));
+            break;
+          case DioErrorType.CONNECT_TIMEOUT:
+            ScaffoldMessenger.of(context)
+                .showSnackBar(SnackBar(content: Text('Connect timeout.')));
+            break;
+          case DioErrorType.RECEIVE_TIMEOUT:
+            ScaffoldMessenger.of(context)
+                .showSnackBar(SnackBar(content: Text('Receive timeout.')));
+            break;
+          case DioErrorType.CANCEL:
+            ScaffoldMessenger.of(context)
+                .showSnackBar(SnackBar(content: Text('Request is cancelled.')));
+            break;
+          case DioErrorType.SEND_TIMEOUT:
+            ScaffoldMessenger.of(context)
+                .showSnackBar(SnackBar(content: Text('Send timeout.')));
+            break;
+        }
       } catch (e) {
-        print(e);
-        await Future.delayed(Duration(seconds: 3));
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('Unknown error.')));
+      } finally {
         Navigator.of(context).pop();
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text('Network Error'),
-        ));
+      }
+      if (token != null) {
+        Navigator.of(context).pushNamed('/home', arguments: {
+          'email': _email,
+          'password': encryptedPassword,
+          'token': token
+        });
       }
     }
   }
