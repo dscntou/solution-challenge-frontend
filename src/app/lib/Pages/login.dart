@@ -40,6 +40,7 @@ class _LoginFormState extends State<LoginForm> {
     });
   }
 
+// TODO: Use FutureBuilder instead this
   void _login() async {
     var loginForm = _formKey.currentState;
     String token;

@@ -8,22 +8,25 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final GlobalKey<ScaffoldState> _homeKey = new GlobalKey<ScaffoldState>();
-  Map parameters;
+  Map parameters, userProfile;
   final String name = 'Name';
   final _dio = Dio();
-  Map userProfile;
 
-  Future<Map> getUserProfile() async {
+  Future<void> getUserProfile() async {
     Response response = await _dio.get(
         'http://api.rexwu.tw/api/user/${parameters['email']}',
         queryParameters: {'Token': parameters['token']});
-    print(response.data);
+    print('Inside\n');
+    userProfile = response.data;
   }
 
   @override
   Widget build(BuildContext context) {
     parameters = (ModalRoute.of(context).settings.arguments as Map);
-    getUserProfile();
+    getUserProfile().whenComplete(() {
+      if (userProfile['role'] == 'null')
+        Navigator.of(context).pushNamed('/choose_role');
+    });
     return Scaffold(
       key: _homeKey,
       appBar: AppBar(
