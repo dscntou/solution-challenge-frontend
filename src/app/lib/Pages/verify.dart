@@ -103,29 +103,9 @@ class _VerificationAreaState extends State<VerificationArea> {
         child: SpinKitWave(color: Colors.grey),
       );
     return VerificationCode(
-      // textStyle: TextStyle(fontSize: 20.0, color: Colors.red[900]),
-      // underlineColor: Colors.amber,
       keyboardType: TextInputType.number,
       length: 4,
-/*
-      clearAll: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Text(
-          'clear all',
-          style: TextStyle(
-              fontSize: 14.0,
-              decoration: TextDecoration.underline,
-              color: Colors.blue[700]),
-        ),
-      ),
-*/
       onCompleted: confirm,
-      /*(String value) {
-        setState(() {
-          print(value);
-          confirm();
-        });
-      },*/
       onEditing: (bool value) {
         setState(() {});
       },
