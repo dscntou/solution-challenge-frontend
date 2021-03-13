@@ -15,6 +15,7 @@ class LoginPage extends StatelessWidget {
         title: Text('Login'),
         leading: IconButton(
           icon: Icon(Icons.menu),
+// TODO: add a drawer
           onPressed: () {},
         ),
       ),
@@ -49,10 +50,14 @@ class _LoginFormState extends State<LoginForm> {
         PageRouteBuilder(
             opaque: false,
             pageBuilder: (_, __, ___) {
-              return Container(
-                color: Colors.grey.withOpacity(0.3),
-                child: SpinKitDoubleBounce(color: Colors.grey),
-              );
+              return WillPopScope(
+                  onWillPop: () async {
+                    return false;
+                  },
+                  child: Container(
+                    color: Colors.grey.withOpacity(0.3),
+                    child: SpinKitDoubleBounce(color: Colors.grey),
+                  ));
             }),
       );
       loginForm.save();

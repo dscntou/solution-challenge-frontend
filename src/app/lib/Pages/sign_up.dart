@@ -43,7 +43,6 @@ class _SignUpFormState extends State<SignUpForm> {
       var encryptedPassword = sha1.convert(utf8.encode(_password)).toString();
       print('$_name\n$_email\n$_password\n$_confirmPassword');
       print('$encryptedPassword\n');
-      Navigator.of(context).pushNamed('/verify', arguments: {'email': _email});
       Response response = await _dio.post('http://api.rexwu.tw/api/user/',
           data: {
             'email': _email,
@@ -51,6 +50,9 @@ class _SignUpFormState extends State<SignUpForm> {
             'name': _name
           });
       print(response.statusCode);
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('Account created. Please check your mailbox.')));
+      Navigator.pop(context);
     }
   }
 
