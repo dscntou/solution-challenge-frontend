@@ -9,39 +9,45 @@ class VerifyPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final userProfile = (ModalRoute.of(context).settings.arguments as Map);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Verify your email'),
-      ),
-      body: Column(
-        children: <Widget>[
-          RichText(
-            text: TextSpan(
-              style: TextStyle(
-                fontSize: 18.0,
-                color: Colors.black,
+    return WillPopScope(
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('Verify your email'),
+        ),
+        body: Column(
+          children: <Widget>[
+            RichText(
+              text: TextSpan(
+                style: TextStyle(
+                  fontSize: 18.0,
+                  color: Colors.black,
+                ),
+                text: 'A verificatoin email was sent to ',
+                children: <TextSpan>[
+                  TextSpan(
+                    text: userProfile['email'],
+                    style: TextStyle(color: Colors.blue),
+                  ),
+                  TextSpan(
+                    text: '.',
+                  ),
+                ],
               ),
-              text: 'A verificatoin email was sent to ',
-              children: <TextSpan>[
-                TextSpan(
-                  text: userProfile['email'],
-                  style: TextStyle(color: Colors.blue),
-                ),
-                TextSpan(
-                  text: '.',
-                ),
-              ],
             ),
-          ),
-          Center(
-              child: VerificationArea(
-            code: userProfile['code'],
-            email: userProfile['email'],
-            name: userProfile['name'],
-            encryptedPassword: userProfile['encryptedPassword'],
-          )),
-        ],
+            Center(
+                child: VerificationArea(
+              code: userProfile['code'],
+              email: userProfile['email'],
+              name: userProfile['name'],
+              encryptedPassword: userProfile['encryptedPassword'],
+            )),
+          ],
+        ),
       ),
+      onWillPop: () async {
+        Navigator.popUntil(context, ModalRoute.withName('/'));
+        return false;
+      },
     );
   }
 }
