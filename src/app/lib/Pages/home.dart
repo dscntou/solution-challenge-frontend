@@ -17,24 +17,36 @@ class _HomePageState extends State<HomePage> {
         'http://api.rexwu.tw/api/user/${parameters['email']}',
         queryParameters: {'Token': parameters['token']});
     userProfile = response.data;
+    var reloadNeeded = await firstLoginCheck();
+    if (reloadNeeded) {
+      response = await _dio.get(
+          'http://api.rexwu.tw/api/user/${parameters['email']}',
+          queryParameters: {'Token': parameters['token']});
+      userProfile = response.data;
+    }
+  }
+
+  Future<bool> firstLoginCheck() async {
+    if (userProfile['verify'] == false)
+      await Navigator.of(context).pushNamed('/verify', arguments: {
+        'email': userProfile['email'],
+        'code': userProfile['verify_code'],
+        'encryptedPassword': userProfile['password'],
+        'name': userProfile['name'],
+      });
+    if (userProfile['role'] == 'null')
+      await Navigator.of(context).pushNamed('/choose_role', arguments: {
+        'email': userProfile['email'],
+        'name': userProfile['name'],
+        'encryptedPassword': userProfile['password'],
+      });
+    return userProfile['verify'] == false || userProfile['role'] == 'null';
   }
 
   @override
   Widget build(BuildContext context) {
     parameters = (ModalRoute.of(context).settings.arguments as Map);
-    getUserProfile().whenComplete(() {
-      if (userProfile['verify'] == false)
-        Navigator.of(context).pushNamed('/verify', arguments: {
-          'email': userProfile['email'],
-          'code': userProfile['verify_code'],
-          'encryptedPassword': userProfile['password'],
-          'name': userProfile['name'],
-        });
-/*
-      else if (userProfile['role'] == 'null')
-        Navigator.of(context).pushNamed('/choose_role');
-*/
-    });
+    getUserProfile().whenComplete(() {});
     return Scaffold(
       key: _homeKey,
       appBar: AppBar(
